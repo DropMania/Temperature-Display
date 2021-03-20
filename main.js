@@ -1,10 +1,23 @@
 const {app, BrowserWindow,screen,ipcMain} = require('electron')
 const path = require('path')
-
+var AutoLaunch = require('auto-launch');
 const SerialPort = require('serialport')
 const Readline = require('@serialport/parser-readline')
 const port = new SerialPort('COM3')
 const parser = port.pipe(new Readline({ delimiter: '\r\n' }))
+
+
+
+var autoLauncher = new AutoLaunch({
+    name: "tempDisplay"
+});
+
+autoLauncher.isEnabled().then(function(isEnabled) {
+  if (isEnabled) return;
+   autoLauncher.enable();
+}).catch(function (err) {
+  throw err;
+});
 
 
 function createWindow () {
@@ -16,6 +29,8 @@ function createWindow () {
     transparent: true,
     alwaysOnTop: true,
     frame: false,
+    skipTaskbar: true,
+		focusable: false,
     webPreferences:{
       nodeIntegration: true
     },
